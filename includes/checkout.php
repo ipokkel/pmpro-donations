@@ -71,9 +71,19 @@ function pmprodon_pmpro_checkout_after_level_cost() {
 		$dropdown_prices = explode( ',', $dropdown_prices );
 
 		// check for other option
-		$pmprodon_allow_other = array_search( 'other', $dropdown_prices );
-		if ( $pmprodon_allow_other !== false ) {
-			unset( $dropdown_prices[ $pmprodon_allow_other ] );
+		$dropdown_prices_words = array();
+		$dropdown_prices_other_word = false;
+		$pmprodon_allow_other = false;
+
+		foreach ( $dropdown_prices as $key => $value ) {
+			if ( ctype_alpha( $value ) ) {
+				$dropdown_prices_words[] = $value;
+			}
+		}
+
+		if ( ! empty( $dropdown_prices_words ) ) {
+			$dropdown_prices = array_diff( $dropdown_prices, $dropdown_prices_words );
+			$dropdown_prices_other_word = end( $dropdown_prices_words );
 			$pmprodon_allow_other = true;
 		}
 
@@ -89,7 +99,7 @@ function pmprodon_pmpro_checkout_after_level_cost() {
 			}
 			if ( $pmprodon_allow_other ) {
 				?>
-				<option value="other" <?php selected( true, ! empty( $donation ) && ! in_array( $donation, $dropdown_prices ) ); ?>>Other</option>
+				<option value="other" <?php selected( true, ! empty( $donation ) && ! in_array( $donation, $dropdown_prices ) ); ?>><?php echo esc_html( $dropdown_prices_other_word ); ?></option>
 			<?php } ?>
 		</select> &nbsp;
 		<?php
