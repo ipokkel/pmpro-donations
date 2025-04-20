@@ -5,6 +5,7 @@
  * It shows/hides the payment gateway section based on the donation amount entered.
  */
 
+console.log('PMPro Donations Checkout script loaded');
 jQuery(document).ready(function($) {
 
         // Only run this script if we're on the checkout page
@@ -17,6 +18,7 @@ jQuery(document).ready(function($) {
         const $billingSection = $('#pmpro_billing_address_fields');
         const $donationAmount = $('#donation');
         const $donationDropdown = $('#donation_dropdown');
+        const $paymentMethodSection = $('#pmpro_payment_method');
         const hiddenClass = 'pmpro-donations-hidden';
 
         // Check if this is a free level with donations
@@ -33,11 +35,9 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        // Add CSS to hide elements when needed
-        $('<style>')
-            .prop('type', 'text/css')
-            .html('.' + hiddenClass + ' { display: none !important; }')
-            .appendTo('head');
+        // Remove the inline display:none CSS attribute
+        $paymentMethodSection.show();
+        // $paymentMethodSection.css('display', 'block');
 
         // Hide payment sections initially
         hidePaymentSections();
@@ -46,7 +46,8 @@ jQuery(document).ready(function($) {
         function hidePaymentSections() {
             $paymentSection.addClass(hiddenClass);
             $billingSection.addClass(hiddenClass);
-            
+            $paymentMethodSection.addClass(hiddenClass);
+
             // Set PMPro's internal billing requirement flag
             if (typeof pmpro_require_billing !== 'undefined') {
                 pmpro_require_billing = false;
@@ -56,7 +57,8 @@ jQuery(document).ready(function($) {
         function showPaymentSections() {
             $paymentSection.removeClass(hiddenClass);
             $billingSection.removeClass(hiddenClass);
-            
+            $paymentMethodSection.removeClass(hiddenClass);
+
             // Set PMPro's internal billing requirement flag
             if (typeof pmpro_require_billing !== 'undefined') {
                 pmpro_require_billing = true;
@@ -65,7 +67,7 @@ jQuery(document).ready(function($) {
 
         function updatePaymentVisibility() {
             let donationValue = 0;
-            
+
             // If we have a dropdown and it's not set to "other", use its value
             if ($donationDropdown.length && $donationDropdown.val() !== 'other') {
                 donationValue = parseFloat($donationDropdown.val()) || 0;
