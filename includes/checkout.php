@@ -515,3 +515,106 @@ function pmprodon_pmpro_confirmation_message( $message, $invoice ) {
 	return $message . wpautop( wp_kses_post( $settings['confirmation_message'] ) );
 }
 add_filter( 'pmpro_confirmation_message', 'pmprodon_pmpro_confirmation_message', 10, 2 );
+
+/**
+ * Enqueue the JavaScript for dynamic payment gateway display on free levels with donations.
+ * 
+ * @since TBD
+ */
+function pmprodon_enqueue_checkout_script() {
+	global $pmpro_level;
+
+	// Only enqueue if we're on the checkout page
+	if ( ! function_exists( 'pmpro_is_checkout' ) || ! pmpro_is_checkout() ) {
+		return;
+	}
+
+	// Only enqueue if the level is free
+	if ( ! isset( $pmpro_level ) || ! pmpro_isLevelFree( $pmpro_level ) ) {
+		return;
+	}
+
+	// Check if donations are enabled for this level
+	$settings = pmprodon_get_level_settings( $pmpro_level->id );
+	if ( empty( $settings['donations'] ) ) {
+		return;
+	}
+
+	// Check if we have donation options configured
+	$min_price_check = ! empty( $settings['min_price'] ) && floatval( $settings['min_price'] ) > 0;
+	
+	// Check dropdown values
+	$dropdown_check = false;
+	if ( ! empty( $settings['dropdown_prices'] ) ) {
+		$dropdown_values = explode( ',', str_replace( ' ', '', $settings['dropdown_prices'] ) );
+		$valid_values = false;
+
+		foreach ( $dropdown_values as $value ) {
+			$value = trim( $value );
+			if ( $value === 'other' ) {
+				continue; // 'other' is allowed.
+			}
+
+			if ( is_numeric( $value ) && floatval( $value ) > 0 ) {
+				$valid_values = true;
+				break;
+			}
+		}
+
+		$dropdown_check = $valid_values && count( $dropdown_values ) > 0;
+	}
+
+	// Only enqueue if either min_price is set or we have valid dropdown values
+	if ( $min_price_check || $dropdown_check ) {
+		// Enqueue our script
+		wp_enqueue_script(
+			'pmpro-donations-checkout',
+			plugins_url( 'js/pmpro-donations-checkout.js', __FILE__ ),
+			array( 'jquery' ),
+			PMPRO_VERSION,
+			true
+		);
+		
+		// Enqueue our CSS
+		wp_enqueue_style(
+			'pmpro-donations-checkout',
+			plugins_url( 'css/pmpro-donations-checkout.css', __FILE__ ),
+			array(),
+			PMPRO_VERSION
+		);
+		
+		// Add a body class to indicate this is a free level with donations
+		add_filter( 'body_class', 'pmprodon_add_body_class' );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'pmprodon_enqueue_checkout_script' );
+
+/**
+ * Add a body class for free levels with donations.
+ * 
+ * @since TBD
+ * 
+ * @param array $classes Array of body classes.
+ * @return array Modified array of body classes.
+ */
+function pmprodon_add_body_class( $classes ) {
+	$classes[] = 'pmpro-free-level-with-donations';
+	return $classes;
+}
+
+/**
+ * Modified version of the pmprodon_enable_payments_for_free_level_donations function
+ * that doesn't modify the 'free' status of the level for donation options.
+ * 
+ * @since TBD
+ * 
+ * @param bool $is_free Whether the level is free or not.
+ * @param object $level The membership level object.
+ * @return bool true if level is free, false if not.
+ */
+function pmprodon_enable_payments_for_free_level_donations( $is_free, $level ) {
+	// Always return the original is_free value.
+	// The JavaScript will handle showing/hiding the payment gateways
+	return $is_free;
+}
+add_filter( 'pmpro_is_level_free', 'pmprodon_enable_payments_for_free_level_donations', 10, 2 );

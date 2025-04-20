@@ -1,0 +1,9 @@
+/**
+ * PMPro Donations Checkout - Dynamic Payment Gateway Display
+ * 
+ * Styles for hiding payment gateways on free levels with donations
+ */
+
+.pmpro-donations-hidden {
+    display: none !important;
+}
