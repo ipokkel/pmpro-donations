@@ -542,7 +542,7 @@ function pmprodon_enqueue_checkout_script() {
 			// Enqueue our script
 			wp_enqueue_script(
 				'pmpro-donations-checkout',
-				plugins_url( 'js/pmpro-donations-checkout.js', __FILE__ ),
+				plugins_url( 'assets/js/pmpro-donations-checkout.js', dirname( __FILE__ ) ),
 				array( 'jquery' ),
 				PMPRO_VERSION,
 				true
@@ -551,7 +551,7 @@ function pmprodon_enqueue_checkout_script() {
 			// Enqueue our CSS
 			wp_enqueue_style(
 				'pmpro-donations-checkout',
-				plugins_url( 'css/pmpro-donations-checkout.css', __FILE__ ),
+				plugins_url( 'assets/css/pmpro-donations-checkout.css', dirname( __FILE__ ) ),
 				array(),
 				PMPRO_VERSION
 			);
