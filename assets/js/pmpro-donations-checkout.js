@@ -7,16 +7,16 @@
 jQuery(document).ready(function($) {
 
         // Only run this script if we're on the checkout page
-        if (!$('#pmpro_form').length) {
+        if (!jQuery('#pmpro_form').length) {
             return;
         }
 
         // Variables to track payment and billing sections
-        const $paymentSection = $('#pmpro_payment_information_fields');
-        const $billingSection = $('#pmpro_billing_address_fields');
-        const $donationAmount = $('#donation');
-        const $donationDropdown = $('#donation_dropdown');
-        const $paymentMethodSection = $('#pmpro_payment_method');
+        const $paymentSection = jQuery('#pmpro_payment_information_fields');
+        const $billingSection = jQuery('#pmpro_billing_address_fields');
+        const $donationAmount = jQuery('#donation');
+        const $donationDropdown = jQuery('#donation_dropdown');
+        const $paymentMethodSection = jQuery('#pmpro_payment_method');
         const hiddenClass = 'pmpro-donations-hidden';
 
         // Check if this is a free level with donations
@@ -25,7 +25,7 @@ jQuery(document).ready(function($) {
         // If the payment section exists and we have a donation field, we're on a free level with donations
         if ($paymentSection.length && ($donationAmount.length || $donationDropdown.length)) {
             // This will be determined by server-side logic (we'll add a class or data attribute)
-            isFreeLevelWithDonations = $('body').hasClass('pmpro-free-level-with-donations');
+            isFreeLevelWithDonations = jQuery('body').hasClass('pmpro-free-level-with-donations');
         }
 
         // If this is not a free level with donations, exit early
@@ -68,7 +68,7 @@ jQuery(document).ready(function($) {
             // If we have a dropdown and it's not set to "other", use its value
             if ($donationDropdown.length && $donationDropdown.val() !== 'other') {
                 donationValue = parseFloat($donationDropdown.val()) || 0;
-            } 
+            }
             // Otherwise, use the text input value
             else if ($donationAmount.length) {
                 donationValue = parseFloat($donationAmount.val()) || 0;
@@ -86,11 +86,11 @@ jQuery(document).ready(function($) {
         if ($donationAmount.length) {
             $donationAmount.on('input change keyup', updatePaymentVisibility);
         }
-        
+
         if ($donationDropdown.length) {
             $donationDropdown.on('change', function() {
                 // Handle the "other" option if it exists
-                if ($(this).val() === 'other') {
+                if (jQuery(this).val() === 'other') {
                     // When "other" is selected, we need to check the text input
                     updatePaymentVisibility();
                 } else {
