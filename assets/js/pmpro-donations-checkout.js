@@ -4,7 +4,7 @@
  * This script handles the dynamic display of payment gateways for free levels with donations.
  * It shows/hides the payment gateway section based on the donation amount entered.
  */
-jQuery(document).ready(function($) {
+jQuery(document).ready(function() {
 
         // Only run this script if we're on the checkout page
         if (!jQuery('#pmpro_form').length) {
