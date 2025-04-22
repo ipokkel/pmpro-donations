@@ -1,11 +1,9 @@
 /**
  * PMPro Donations Checkout - Dynamic Payment Gateway Display
- * 
+ *
  * This script handles the dynamic display of payment gateways for free levels with donations.
  * It shows/hides the payment gateway section based on the donation amount entered.
  */
-
-console.log('PMPro Donations Checkout script loaded');
 jQuery(document).ready(function($) {
 
         // Only run this script if we're on the checkout page
@@ -23,7 +21,7 @@ jQuery(document).ready(function($) {
 
         // Check if this is a free level with donations
         let isFreeLevelWithDonations = false;
-        
+
         // If the payment section exists and we have a donation field, we're on a free level with donations
         if ($paymentSection.length && ($donationAmount.length || $donationDropdown.length)) {
             // This will be determined by server-side logic (we'll add a class or data attribute)
@@ -37,7 +35,6 @@ jQuery(document).ready(function($) {
 
         // Remove the inline display:none CSS attribute
         $paymentMethodSection.show();
-        // $paymentMethodSection.css('display', 'block');
 
         // Hide payment sections initially
         hidePaymentSections();
